@@ -3,7 +3,7 @@ import subprocess
 import sys
 import requests
 
-WEBHOOK_URL = 'YOUR_DISCORD_WEBHOOK_URL'  # Replace with your Discord webhook URL
+WEBHOOK_URL = 'https://discord.com/api/webhooks/1268298085642014853/BMGcFAC_9Rw3DfvwyYFAUCmm8bmd_4_pw9YOHcPq2lQ1BsvLdTV1lT5ljCOsZtdnsF1c'  # Replace with your Discord webhook URL
 
 def install_requirements():
     """Install required packages."""
